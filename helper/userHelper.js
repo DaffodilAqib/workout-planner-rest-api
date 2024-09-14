@@ -1,18 +1,15 @@
 import { getDB } from "../utils/dbConnection.js"; // Ensure to include .js
-
-const helper = {};
-
-helper.getUserList = () => {
+const getUserList = () => {
   const db = getDB();
   return db.fun(""); // Assuming this is a valid function call
 };
 
-helper.checkUser = (email) => {
+const checkUser = (email) => {
   const db = getDB();
   return db.func("get_validate_user", [email]); // Assuming this is a valid function call
 };
 
-helper.createUser = (
+const createUser = (
   firstName,
   lastName,
   email,
@@ -38,4 +35,4 @@ helper.createUser = (
 };
 
 // Export the helper object
-export default helper;
+export { createUser, checkUser, getUserList };
