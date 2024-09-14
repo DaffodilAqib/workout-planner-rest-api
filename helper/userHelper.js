@@ -24,7 +24,6 @@ helper.createUser = (
   state
 ) => {
   const db = getDB();
-  console.log("Database connection:", db);
   return db.func("create_user", [
     firstName,
     lastName,

@@ -4,7 +4,6 @@ import { createUser } from "../controller/userController.js";
 const router = express.Router();
 
 router.get("/list", (req, res, next) => {
-  console.log("working fine");
   res.send("List of users");
 });
 
