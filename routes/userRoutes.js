@@ -1,19 +1,18 @@
-const express = require("express");
-const { createUser } = require("../controler/userControler");
+import express from "express";
+import { createUser } from "../controller/userController.js";
+
 const router = express.Router();
 
-router.get('/list', (req, res, next) => {
-    console.log("working fine");
-    res.send("List of users");
-})
+router.get("/list", (req, res, next) => {
+  console.log("working fine");
+  res.send("List of users");
+});
 
+router.post("/add", createUser);
 
-router.post('/add', createUser);
-
-
-
-module.exports = {
-    path: '/users',
-    router,
-    requiresAuth: true
-}
+// Export the router with its path and authentication requirements
+export const userRoutes = {
+  path: "/users",
+  router,
+  requiresAuth: true,
+};

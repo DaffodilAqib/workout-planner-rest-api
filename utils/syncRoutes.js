@@ -1,26 +1,24 @@
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
+import { authenticateUser } from "../middleware/auth.js"; // Ensure to include .js
+import { fileURLToPath } from "url";
 
-const { authenticateUser } = require('../middleware/auth')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Generic route loader
-const loadRoutes = (app) => {
-  const routesPath = path.join(__dirname, '../routes');
-  console.log("routerPath", routesPath);
+export const loadRoutes = async (app) => {
+  const routesPath = path.join(__dirname, "../routes");
   // Read all files in the routes folder
-  fs.readdirSync(routesPath).forEach((file) => {
-    const route = require(path.join(routesPath, file));
-    console.log("router", route);
-
+  const files = fs.readdirSync(routesPath);
+  for (const file of files) {
+    const route = await import(path.join(routesPath, file)); // Dynamic import
+    const fileName = file.split(".")[0];
     // Apply the route to the app
-    if (route.requiresAuth) {
-      app.use(route.path, authenticateUser, route.router);  // Apply auth middleware
+    if (route[fileName].requiresAuth) {
+      app.use(route[fileName].path, authenticateUser, route[fileName].router); // Apply auth middleware
     } else {
-      app.use(route.path, route.router);  // No auth middleware for this route
+      app.use(route[fileName].path, route[fileName].router); // No auth middleware for this route
     }
-  });
+  }
 };
-
-module.exports = {
-  loadRoutes
-}
