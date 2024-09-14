@@ -18,7 +18,13 @@ const createUser = (
   levelId,
   address,
   city,
-  state
+  state,
+  gender,
+  age,
+  height,
+  weight,
+  injuries,
+  trainingType
 ) => {
   const db = getDB();
   return db.func("create_user", [
@@ -31,6 +37,12 @@ const createUser = (
     address,
     city,
     state,
+    gender,
+    age,
+    height,
+    weight,
+    injuries,
+    trainingType,
   ]); // Assuming this is a valid function call
 };
 
