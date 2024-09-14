@@ -2,9 +2,7 @@ const { createUser } = require("../helper/userHelper");
 const { encrypted } = require("../utils/encryption");
 const { generateToken } = require("../utils/generateToken");
 
-const controllers = {
-
-}
+const controllers = {}
 controllers.createUser = (req, res, next) => {
     const { firstName, lastName, email, password, userTypeId, levelId, address, city, state } = req.body;
     const encPassword = encrypted(password);

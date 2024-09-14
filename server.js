@@ -1,8 +1,7 @@
 // Import necessary modules
 const cluster = require('cluster');
 const os = require('os');
-const fs = require('fs');
-const path = require('path');
+
 const express = require('express');
 require('dotenv').config();
 const { connect } = require('./utils/dbConnection');
@@ -14,10 +13,10 @@ connect().then((dbObj) => {
   console.log("DB connected successfully");
 
 }).catch((err) => {
-        console.log("unable to connect with DB", err);
+  console.log("unable to connect with DB", err);
 })
 
-app.use(cookieParser());
+
 if (cluster.isMaster) {
   // Get the number of CPU cores
   const numCPUs = os.cpus().length;
@@ -37,11 +36,12 @@ if (cluster.isMaster) {
 } else {
   // Worker processes create the Express server
   const app = express();
+  app.use(cookieParser());
 
   // Middleware for parsing JSON
-app.use(express.json());
+  app.use(express.json());
 
-loadRoutes(app);
+  loadRoutes(app);
 
   // Start the server
   const PORT = process.env.PORT || 3000;

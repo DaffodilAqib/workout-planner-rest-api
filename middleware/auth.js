@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken")
+
 const authenticateUser = (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
@@ -5,7 +7,7 @@ const authenticateUser = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         // Check if the error is due to token expiration
         if (err.name === 'TokenExpiredError') {
@@ -25,5 +27,5 @@ const authenticateUser = (req, res, next) => {
 
 
 module.exports = {
-    authenticateUser
+  authenticateUser
 }
