@@ -1,51 +1,57 @@
-// Import necessary modules
-const cluster = require('cluster');
-const os = require('os');
+import cluster from "cluster";
+import os from "os";
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { connect } from "./utils/dbConnection.js";
+import { loadRoutes } from "./utils/syncRoutes.js";
 
-const express = require('express');
-require('dotenv').config();
-const { connect } = require('./utils/dbConnection');
-const cookieParser = require('cookie-parser');
-const { loadRoutes } = require('./utils/syncRoutes');
+// Load environment variables from .env file
+dotenv.config();
 
-// Check if the current process is the master process
-connect().then((dbObj) => {
-  console.log("DB connected successfully");
+// Function to start the server
+const startServer = async () => {
+  try {
+    await connect();
+    console.log("DB connected successfully");
 
-}).catch((err) => {
-  console.log("unable to connect with DB", err);
-})
+    if (cluster.isMaster) {
+      // Get the number of CPU cores
+      const numCPUs = os.cpus().length;
 
+      // Fork workers for each CPU core
+      for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+      }
 
-if (cluster.isMaster) {
-  // Get the number of CPU cores
-  const numCPUs = os.cpus().length;
+      // Event listener for worker exits
+      cluster.on("exit", (worker, code, signal) => {
+        console.log(`Worker ${worker.process.pid} died`);
+        console.log("Forking a new worker...\n");
+        cluster.fork();
+      });
+    } else {
+      // Worker processes create the Express server
+      const app = express();
+      app.use(cookieParser());
 
-  // Fork workers for each CPU core
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
+      // Middleware for parsing JSON
+      app.use(express.json());
+
+      loadRoutes(app);
+
+      // Start the server
+      const PORT = process.env.PORT || 3000;
+      app.listen(PORT, () => {
+        console.log(
+          `Server is running on PORT ${PORT} by worker ${process.pid}`
+        );
+      });
+    }
+  } catch (err) {
+    console.log("Unable to connect with DB", err);
   }
+};
 
-  // Event listener for worker exits
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    console.log('Forking a new worker...\n');
-    cluster.fork();
-  });
-
-} else {
-  // Worker processes create the Express server
-  const app = express();
-  app.use(cookieParser());
-
-  // Middleware for parsing JSON
-  app.use(express.json());
-
-  loadRoutes(app);
-
-  // Start the server
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on PORT ${PORT} by worker ${process.pid}`);
-  });
-}
+// Start the server
+startServer();

@@ -1,19 +1,23 @@
-const jwt = require("jsonwebtoken")
+import jwt from "jsonwebtoken";
 
-const authenticateUser = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
+export const authenticateUser = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
 
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1];
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
 
     // Verify the token
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         // Check if the error is due to token expiration
-        if (err.name === 'TokenExpiredError') {
-          return res.status(401).json({ message: 'Unauthorized: Token has expired' });
+        if (err.name === "TokenExpiredError") {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized: Token has expired" });
         } else {
-          return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+          return res
+            .status(401)
+            .json({ message: "Unauthorized: Invalid token" });
         }
       }
 
@@ -21,11 +25,6 @@ const authenticateUser = (req, res, next) => {
       next();
     });
   } else {
-    return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 };
-
-
-module.exports = {
-  authenticateUser
-}
