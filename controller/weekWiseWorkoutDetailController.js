@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { getWorkoutPlanOfUserInRange } from "../helper/workoutPlanHelper.js";
 
 const getGroupedExcerciseByDateAndUserID = async (req, res) => {
-  const { dateRange, userID } = req.body;
+  const { startDate, endDate, userID } = req.body;
   if (!userID || _.isEmpty(dateRange))
     return res.status(400).json({
       error:
@@ -10,7 +10,8 @@ const getGroupedExcerciseByDateAndUserID = async (req, res) => {
     });
   try {
     await getWorkoutPlanOfUserInRange({
-      dateRange,
+      startDate,
+      endDate,
       userID,
     });
   } catch (error) {

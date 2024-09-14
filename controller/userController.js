@@ -16,6 +16,12 @@ const createUser = (req, res) => {
     address,
     city,
     state,
+    gender,
+    age,
+    height,
+    weight,
+    injuries,
+    trainingType,
   } = req.body;
   const encPassword = encrypted(password);
 
@@ -28,7 +34,13 @@ const createUser = (req, res) => {
     levelId,
     address,
     city,
-    state
+    state,
+    gender,
+    age,
+    height,
+    weight,
+    injuries,
+    trainingType
   )
     .then((result) => {
       res.send(result);

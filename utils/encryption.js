@@ -1,9 +1,9 @@
-import crypto from "crypto";
+import { publicEncrypt, constants } from "crypto";
 export const encrypted = (password) => {
-  const encryptedData = crypto.publicEncrypt(
+  const encryptedData = publicEncrypt(
     {
-      key: publicKey,
-      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      key: process.env.RSA_PUBLIC_KEY,
+      padding: constants.RSA_PKCS1_OAEP_PADDING,
       oaepHash: "sha256",
     },
     // Convert the data string to a buffer using `Buffer.from`
