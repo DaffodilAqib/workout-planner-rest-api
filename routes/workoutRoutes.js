@@ -1,5 +1,6 @@
 import express from "express";
 import OpenAI from "openai";
+import { getGroupedExcerciseByDateAndUserID } from "../controller/weekWiseWorkoutDetailController.js";
 const router = express.Router();
 
 router.get("/suggestion", async (req, res, next) => {
@@ -25,6 +26,8 @@ router.get("/suggestion", async (req, res, next) => {
       .json({ error: "An error occurred while processing your request." });
   }
 });
+
+router.get("/list", getGroupedExcerciseByDateAndUserID);
 
 // Export the router with its path
 export const workoutRoutes = {
