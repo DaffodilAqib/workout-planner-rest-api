@@ -1,6 +1,6 @@
 import express from "express";
 import OpenAI from "openai";
-import {
+import { addRepititionsIntoWorkoutPlan,
     getGroupedExcerciseByDateAndUserID,
     insertDefaultValue,
 } from "../controller/weekWiseWorkoutDetailController.js";
@@ -180,6 +180,7 @@ router.post("./v1/suggestion", async (req, res, next) => {
     const outputText = GPTOutput.choices[0].message.content;
     res.send(outputText);
 })
+router.put("/addRepetitions", addRepititionsIntoWorkoutPlan);
 
 // Export the router with its path
 export const workoutRoutes = {

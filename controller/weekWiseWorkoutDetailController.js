@@ -1,7 +1,8 @@
 import * as _ from "lodash";
 import {
-  addWorkoutPlan,
   getWorkoutPlanOfUserInRange,
+  addWorkoutPlan,
+  addRepititionsDataIntoWorkoutPlan,
 } from "../helper/workoutPlanHelper.js";
 
 const getGroupedExcerciseByDateAndUserID = (req, res) => {
@@ -27,7 +28,7 @@ const insertDefaultValue = async (req, res) => {
 
     workout_plan.forEach((item) => {
       console.log("item", item);
-      allPromise.push(addWorkoutPlan('2024-09-12', item, -1, true));
+      allPromise.push(addWorkoutPlan("2024-09-12", item, -1, true));
     });
     Promise.all(allPromise)
       .then((result) => {
@@ -42,4 +43,38 @@ const insertDefaultValue = async (req, res) => {
   }
 };
 
-export { getGroupedExcerciseByDateAndUserID, insertDefaultValue };
+const addRepititionsIntoWorkoutPlan = async (req, res) => {
+  const {
+    workoutPlanId,
+    startWeight = 0,
+    maxWeight = 0,
+    userPerformedSets = 0,
+    userPerformedReps = 0,
+  } = req.body;
+  if (!workoutPlanId)
+    return res
+      .status(400)
+      .send(
+        "Bad request. Please provide missing data. Required workoutPlanId*."
+      );
+
+  try {
+    addRepititionsDataIntoWorkoutPlan({
+      workoutPlanId,
+      startWeight,
+      maxWeight,
+      userPerformedSets,
+      userPerformedReps,
+    }).then((result) => {
+      res.send(result);
+    });
+  } catch (error) {
+    return res.status(500).json({ error: `Internal server error: ${error}` });
+  }
+};
+
+export {
+  getGroupedExcerciseByDateAndUserID,
+  addRepititionsIntoWorkoutPlan,
+  insertDefaultValue,
+};

@@ -18,6 +18,7 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "nodemon": "^3.1.4",
     "openai": "^4.60.1",
     "pg-promise": "^11.9.1"
   }

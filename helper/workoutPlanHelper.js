@@ -1,4 +1,3 @@
-import { insertDefaultValue } from "../controller/weekWiseWorkoutDetailController.js";
 import { getDB } from "../utils/dbConnection.js";
 
 const getWorkoutPlanOfUserInRange = (startDate, endDate, userId) => {
@@ -11,13 +10,11 @@ const getWorkoutPlanOfUserInRange = (startDate, endDate, userId) => {
 };
 
 const addWorkoutPlan = (date, data, userId, defaultValue = false) => {
-  console.log("data.exercises", defaultValue)
-
   const db = getDB();
   if (defaultValue)
     return db.func("insert_default_workout_plan", [
       date,
-      'monday',
+      "monday",
       JSON.stringify(data.exercises),
     ]);
   else {
@@ -27,12 +24,36 @@ const addWorkoutPlan = (date, data, userId, defaultValue = false) => {
       userId,
     ]);
   }
+};
 
+const addRepititionsDataIntoWorkoutPlan = ({
+  workoutPlanId,
+  startWeight,
+  maxWeight,
+  userPerformedSets,
+  userPerformedReps,
+}) => {
+  const db = getDB();
+  return db.func("add_repititions_into_workout_plan", [
+    workoutPlanId,
+    startWeight,
+    maxWeight,
+    userPerformedSets,
+    userPerformedReps,
+  ]);
 };
 
 const addDefaultWorkoutPlan = (userId, numDays) => {
   const db = getDB();
-  return db.func('create_workout_plan_based_on_default_plan', [userId, numDays])
-}
+  return db.func("create_workout_plan_based_on_default_plan", [
+    userId,
+    numDays,
+  ]);
+};
 
-export { getWorkoutPlanOfUserInRange, addWorkoutPlan, addDefaultWorkoutPlan };
+export {
+  getWorkoutPlanOfUserInRange,
+  addWorkoutPlan,
+  addDefaultWorkoutPlan,
+  addRepititionsDataIntoWorkoutPlan,
+};
