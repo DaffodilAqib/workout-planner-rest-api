@@ -1,6 +1,6 @@
 import express from "express";
 import OpenAI from "openai";
-import { getGroupedExcerciseByDateAndUserID } from "../controller/weekWiseWorkoutDetailController.js";
+import { addRepititionsIntoWorkoutPlan, getGroupedExcerciseByDateAndUserID } from "../controller/weekWiseWorkoutDetailController.js";
 import { addWorkoutPlan } from "../helper/workoutPlanHelper.js";
 const router = express.Router();
 
@@ -56,6 +56,7 @@ Here, please note that in above context, we need 5 exercises for a particular bo
 });
 
 router.get("/list", getGroupedExcerciseByDateAndUserID);
+router.put("/addRepetitions", addRepititionsIntoWorkoutPlan);
 
 // Export the router with its path
 export const workoutRoutes = {
