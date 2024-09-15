@@ -1,12 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import { checkUser } from "../controller/userController.js";
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  // Implement your login logic here
-});
+router.post("/login", checkUser);
 
 router.post("/token", (req, res) => {
   const refreshToken = req.cookies.refreshToken;

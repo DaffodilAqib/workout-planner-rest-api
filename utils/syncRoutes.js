@@ -14,10 +14,13 @@ export const loadRoutes = async (app) => {
   for (const file of files) {
     const route = await import(path.join(routesPath, file)); // Dynamic import
     const fileName = file.split(".")[0];
+    console.log(">>>>>fileName", fileName);
     // Apply the route to the app
     if (route[fileName].requiresAuth) {
       app.use(route[fileName].path, authenticateUser, route[fileName].router); // Apply auth middleware
     } else {
+      console.log(">>>>>fileName", fileName);
+
       app.use(route[fileName].path, route[fileName].router); // No auth middleware for this route
     }
   }
