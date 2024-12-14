@@ -1,14 +1,19 @@
-import { publicEncrypt, constants } from "crypto";
-export const encrypted = (password) => {
-  const encryptedData = publicEncrypt(
-    {
-      key: process.env.RSA_PUBLIC_KEY,
-      padding: constants.RSA_PKCS1_OAEP_PADDING,
-      oaepHash: "sha256",
-    },
-    // Convert the data string to a buffer using `Buffer.from`
-    Buffer.from(password)
-  );
+import bcrypt from "bcrypt";
 
-  return encryptedData.toString("base64");
+// Example of a static salt, replace with your own secure salt
+
+export const encrypted = (password) => {
+  console.log("passs", password, process.env.ENCRYPTION_SALT);
+  return new Promise((resolve, reject) => {
+    // Hash the password using bcrypt with a predefined static salt
+    bcrypt.hash(password, process.env.ENCRYPTION_SALT, function (err, hash) {
+      if (err) {
+        reject("Cannot encrypt");
+      }
+
+      // Return the encrypted password (hashed password)
+      console.log("has", hash);
+      resolve(hash);
+    });
+  });
 };
